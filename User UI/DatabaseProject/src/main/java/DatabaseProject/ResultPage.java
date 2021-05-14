@@ -29,13 +29,13 @@ public class ResultPage extends javax.swing.JFrame {
                     Statement stmt = con.createStatement();
 
                     ResultSet rs = stmt.executeQuery(
-                            "SELECT DISTINCT Name, Temperature, Humidity, DateTime" +
+                            "SELECT DISTINCT Name, Temperature, Humidity, DateTime,WindSpeed" +
                             "FROM Weather w, City c" +
                             "WHERE DateTime = \'"+datetime+"\' AND w.Cid = c.Cid AND c.name=\'"+City);
                     if(rs.next()) {
-                         String temp = rs.getString("e_role");
-                         String wind = rs.getString("e_role");
-                         String humid = rs.getString("e_role");
+                         String temp = rs.getString("Temperature");
+                         String wind = rs.getString("WindSpeed");
+                         String humid = rs.getString("Humidity");
                          temperature.setText(temp);
                          windspeed.setText(wind);
                          humidity.setText(humid);

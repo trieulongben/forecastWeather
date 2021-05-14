@@ -1,18 +1,18 @@
+DatabaseProject/Main.java
+ DatabaseProject.Main
+DatabaseProject/Login.java
+ DatabaseProject.Login
+ DatabaseProject.Login$1
+ DatabaseProject.Login$2
+DatabaseProject/Register.java
+ DatabaseProject.Register
+ DatabaseProject.Register$1
+ DatabaseProject.Register$2
 DatabaseProject/ResultPage.java
  DatabaseProject.ResultPage
  DatabaseProject.ResultPage$1
  DatabaseProject.ResultPage$2
  DatabaseProject.ResultPage$3
-DatabaseProject/Login.java
- DatabaseProject.Login
- DatabaseProject.Login$1
- DatabaseProject.Login$2
 DatabaseProject/UserInput.java
  DatabaseProject.UserInput
  DatabaseProject.UserInput$1
-DatabaseProject/Register.java
- DatabaseProject.Register
- DatabaseProject.Register$1
- DatabaseProject.Register$2
-DatabaseProject/Main.java
- DatabaseProject.Main
