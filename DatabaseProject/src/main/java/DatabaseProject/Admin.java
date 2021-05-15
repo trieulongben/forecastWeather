@@ -7,6 +7,12 @@ package DatabaseProject;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.Statement;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -21,9 +27,10 @@ public class Admin extends javax.swing.JFrame {
 
     public Admin(String connectionUrl) {
         initComponents();
+        City.requestFocusInWindow();
         this.connectionUrl = connectionUrl;
         setTitle("Admin");
-        this.setSize(new Dimension(455, 330)); 
+        this.setSize(new Dimension(455, 330));
 //        this.setContentPane(rootPanel);
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
@@ -44,7 +51,6 @@ public class Admin extends javax.swing.JFrame {
         DLabel = new javax.swing.JLabel();
         Date = new javax.swing.JTextField();
         TLabel = new javax.swing.JLabel();
-        Hour = new javax.swing.JTextField();
         TempLabel = new javax.swing.JLabel();
         Temp = new javax.swing.JTextField();
         WSLabel = new javax.swing.JLabel();
@@ -52,6 +58,7 @@ public class Admin extends javax.swing.JFrame {
         HLabel = new javax.swing.JLabel();
         Humid = new javax.swing.JTextField();
         Update = new javax.swing.JButton();
+        Hour = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -60,6 +67,11 @@ public class Admin extends javax.swing.JFrame {
 
         CLabel.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         CLabel.setText("City:");
+        CLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                CLabelMouseClicked(evt);
+            }
+        });
 
         City.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Ho Chi Minh", "Ha Noi", "Hue", "Da Nang" }));
         City.addActionListener(new java.awt.event.ActionListener() {
@@ -70,32 +82,57 @@ public class Admin extends javax.swing.JFrame {
 
         DLabel.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         DLabel.setText("Date:");
+        DLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                DLabelMouseClicked(evt);
+            }
+        });
 
         Date.setText("2021-05-15");
 
         TLabel.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         TLabel.setText("Hour:");
-
-        Hour.setText("00:00:00.000");
-        Hour.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                HourActionPerformed(evt);
+        TLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                TLabelMouseClicked(evt);
             }
         });
 
         TempLabel.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         TempLabel.setText("Temperature:");
+        TempLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                TempLabelMouseClicked(evt);
+            }
+        });
 
         WSLabel.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         WSLabel.setText("Wind Speed:");
+        WSLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                WSLabelMouseClicked(evt);
+            }
+        });
 
         HLabel.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         HLabel.setText("Humidity:");
+        HLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                HLabelMouseClicked(evt);
+            }
+        });
 
         Update.setText("Update");
         Update.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 UpdateActionPerformed(evt);
+            }
+        });
+
+        Hour.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "00:00:00.000", "00:30:00.000", "01:00:00.000", "01:30:00.000", "02:00:00.000", "02:30:00.000", "03:00:00.000", "03:30:00.000", "04:00:00.000", "04:30:00.000", "05:00:00.000", "05:30:00.000", "06:00:00.000", "06:30:00.000", "07:00:00.000", "07:30:00.000", "08:00:00.000", "08:30:00.000", "09:00:00.000", "09:30:00.000", "10:00:00.000", "10:30:00.000", "11:00:00.000", "11:30:00.000", "12:00:00.000", "12:30:00.000", "13:00:00.000", "13:30:00.000", "14:00:00.000", "14:30:00.000", "15:00:00.000", "15:30:00.000", "16:00:00.000", "16:30:00.000", "17:00:00.000", "17:30:00.000", "18:00:00.000", "18:30:00.000", "19:00:00.000", "19:30:00.000", "20:00:00.000", "20:30:00.000", "21:00:00.000", "21:30:00.000", "22:00:00.000", "22:30:00.000", "23:00:00.000", "23:30:00.000" }));
+        Hour.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                HourActionPerformed(evt);
             }
         });
 
@@ -111,15 +148,15 @@ public class Admin extends javax.swing.JFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(DLabel)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(Date))
+                                .addComponent(Date, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(TLabel)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(Hour))
+                                .addComponent(Hour, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(CLabel)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(City, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(City, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                         .addGap(40, 40, 40)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
@@ -135,12 +172,13 @@ public class Admin extends javax.swing.JFrame {
                                     .addComponent(Speed, javax.swing.GroupLayout.DEFAULT_SIZE, 75, Short.MAX_VALUE)
                                     .addComponent(Humid)))))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(103, 103, 103)
-                        .addComponent(Title))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(161, 161, 161)
+                        .addGap(178, 178, 178)
                         .addComponent(Update)))
                 .addContainerGap(50, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(Title)
+                .addGap(102, 102, 102))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -159,32 +197,87 @@ public class Admin extends javax.swing.JFrame {
                     .addComponent(Date, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(WSLabel)
                     .addComponent(Speed, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(41, 41, 41)
+                .addGap(40, 40, 40)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(TLabel)
-                    .addComponent(Hour, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(HLabel)
-                    .addComponent(Humid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
+                    .addComponent(Humid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Hour, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
                 .addComponent(Update, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(25, 25, 25))
+                .addGap(29, 29, 29))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void UpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UpdateActionPerformed
-        // TODO add your handling code here:
+        String city = City.getSelectedItem().toString();
+        String date = Date.getText().trim();
+        String time = Hour.getSelectedItem().toString();
+        String temp = Temp.getText().trim();
+        String speed = Speed.getText().trim();
+        String humid = Humid.getText().trim();
+        StringBuilder results = new StringBuilder();
+
+        try {
+            Connection con = DriverManager.getConnection(connectionUrl);
+            Statement stmt = con.createStatement();
+            Statement queue = con.createStatement();
+            ResultSet rs = stmt.executeQuery("Select Cid From City Where Name = '" + city + "'");
+            ResultSetMetaData metaData = rs.getMetaData();
+            int numberOfCols = metaData.getColumnCount();
+            while (rs.next()) {
+                for (int i = 1; i <= numberOfCols; i++) {
+                    results.append(rs.getObject(i).toString());
+                }
+            }
+            String cid = results.toString();
+            if (cid.length() == 0 || date.length() == 0 || time.length() == 0 || temp.length() == 0 || speed.length() == 0 || humid.length() == 0) {
+                JOptionPane.showMessageDialog(null, "Some input parameter is null!", "Return", JOptionPane.WARNING_MESSAGE);
+            } else {
+                String query = "Insert Into Weather(Cid, DateTime, Temperature, WindSpeed, Humidity) "+
+                               "Values('" + cid + "','" + date + " " + time + "'," + temp + "," + speed + "," + humid + ")";
+                System.out.println(query);
+                queue.executeUpdate(query);
+                JOptionPane.showMessageDialog(null, "Registed successfully");
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }//GEN-LAST:event_UpdateActionPerformed
 
     private void CityActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CityActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_CityActionPerformed
 
+    private void CLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_CLabelMouseClicked
+        City.requestFocusInWindow();
+    }//GEN-LAST:event_CLabelMouseClicked
+
+    private void TempLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TempLabelMouseClicked
+        Temp.requestFocusInWindow();
+    }//GEN-LAST:event_TempLabelMouseClicked
+
+    private void DLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_DLabelMouseClicked
+        Date.requestFocusInWindow();
+    }//GEN-LAST:event_DLabelMouseClicked
+
+    private void WSLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_WSLabelMouseClicked
+        Speed.requestFocusInWindow();
+    }//GEN-LAST:event_WSLabelMouseClicked
+
+    private void TLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TLabelMouseClicked
+        Hour.requestFocusInWindow();
+    }//GEN-LAST:event_TLabelMouseClicked
+
+    private void HLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_HLabelMouseClicked
+        Humid.requestFocusInWindow();
+    }//GEN-LAST:event_HLabelMouseClicked
+
     private void HourActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_HourActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_HourActionPerformed
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel CLabel;
@@ -192,7 +285,7 @@ public class Admin extends javax.swing.JFrame {
     private javax.swing.JLabel DLabel;
     private javax.swing.JTextField Date;
     private javax.swing.JLabel HLabel;
-    private javax.swing.JTextField Hour;
+    private javax.swing.JComboBox<String> Hour;
     private javax.swing.JTextField Humid;
     private javax.swing.JTextField Speed;
     private javax.swing.JLabel TLabel;

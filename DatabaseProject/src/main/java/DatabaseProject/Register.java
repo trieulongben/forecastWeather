@@ -160,7 +160,7 @@ public class Register extends javax.swing.JFrame {
                 ResultSet rs = stmt.executeQuery("select * from [User] s where s.Uid = \'" + ID + "\';");
                 if (!rs.next()) {
                     try {
-                        query.executeQuery("INSERT INTO [User](Uid,Password,Role) VALUES(\'" + ID + "\',\'" + Password + "',\'user\');");
+                        query.executeUpdate("INSERT INTO [User](Uid,Password,Role) VALUES(\'" + ID + "\',\'" + Password + "',\'user\');");
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }

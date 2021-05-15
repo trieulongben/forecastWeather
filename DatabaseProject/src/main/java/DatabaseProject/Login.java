@@ -160,7 +160,6 @@ public class Login extends javax.swing.JFrame {
         try {
             Connection con = DriverManager.getConnection(connectionUrl);
             Statement stmt = con.createStatement();
-
             ResultSet rs = stmt.executeQuery("select * from [User] s where s.Uid = \'" + USER_ID + "\' AND password = \'" + USER_PASSWORD + "\';");
 
             if (rs.next()) {
@@ -175,7 +174,7 @@ public class Login extends javax.swing.JFrame {
                         results.append(r.getObject(i).toString());     
                     }
                 }
-                System.out.println(results);
+                //System.out.println(results);
 
                 JOptionPane.showMessageDialog(null, "Login successfully! Welcome.");
                 if (results.toString().equals("admin")) {
