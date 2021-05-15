@@ -8,6 +8,7 @@ package DatabaseProject;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.Statement;
 import javax.swing.JOptionPane;
 
@@ -24,18 +25,34 @@ public class ResultPage extends javax.swing.JFrame {
         initComponents();
         this.connectionUrl = connectionUrl;
         setTitle("Result");
+         StringBuilder results = new StringBuilder();
         try {
                     Connection con = DriverManager.getConnection(connectionUrl);
-                    Statement stmt = con.createStatement();
-
-                    ResultSet rs = stmt.executeQuery(
-                            "SELECT DISTINCT Name, Temperature, Humidity, DateTime, WindSpeed " +
-                            "FROM Weather w, City c " +
-                            "WHERE DateTime = \'"+datetime+"\' AND w.Cid = c.Cid AND c.name=\'"+City + "'");
-                    if(rs.next()) {
-                         String temp = rs.getString("Temperature");
-                         String wind = rs.getString("WindSpeed");
-                         String humid = rs.getString("Humidity");
+                    Statement stmt1 = con.createStatement();
+                    Statement stmt2 = con.createStatement();
+                    String dt_max = datetime + " 23:59:00.000";
+                    Statement queue = con.createStatement();
+            ResultSet rs = stmt1.executeQuery("Select Cid From City Where Name = '" + City + "'");
+            ResultSetMetaData metaData = rs.getMetaData();
+            int numberOfCols = metaData.getColumnCount();
+            while (rs.next()) {
+                for (int i = 1; i <= numberOfCols; i++) {
+                    results.append(rs.getObject(i).toString());
+                }
+            }
+            String cid = results.toString();
+            String query = "SELECT DISTINCT Name, Temperature, Round(Avg(Humidity),2), Round(Avg(DateTime),2), Round(Avg(WindSpeed),2) " +
+                            "FROM Weather w" +
+                            "WHERE DateTime BETWEEN \'"+datetime+"\' AND '" + dt_max +"' AND Cid ='" + cid +"'";
+            System.out.println(query);
+                    ResultSet rs2 = stmt2.executeQuery(
+                            "SELECT  Round(Avg(Humidity),2) as Humidity, Round(Avg(Temperature),2) as Temperature, Round(Avg(WindSpeed),2) as WindSpeed " +
+                            "FROM Weather w " +
+                            "WHERE DateTime BETWEEN \'"+datetime+"\' AND '" + dt_max +"' AND Cid ='" + cid +"'");
+                    if(rs2.next()) {
+                         String temp = rs2.getString("Temperature");
+                         String wind = rs2.getString("WindSpeed");
+                         String humid = rs2.getString("Humidity");
                          temperature.setText(temp);
                          windspeed.setText(wind);
                          humidity.setText(humid);
